@@ -1,5 +1,19 @@
 # Changelog
 
+## Version 2.3.1 - Stream-based State Loading
+
+### Changed
+- **Optimized loadCrawlState()**: Now uses streaming for large files (>50MB)
+- **Automatic detection**: Checks file size and chooses best loading method
+- **Memory efficient**: Prevents memory issues with very large crawl states
+- **64KB chunks**: Streams file in manageable chunks for better performance
+
+### Technical Details
+- Small files (<50MB): Fast readFile() approach
+- Large files (>50MB): Stream-based loading with createReadStream()
+- Automatic file size detection with fs.stat()
+- Warning message when using streaming mode
+
 ## Version 2.3.0 - Concurrent Crawling
 
 ### Added

@@ -113,9 +113,11 @@ node index.js https://example.com -r  # Short version
 ```
 
 The crawler will:
-1. Load previously discovered URLs
+1. Load previously discovered URLs (with automatic streaming for large files >50MB)
 2. Skip already crawled pages
 3. Continue with remaining URLs in the queue
+
+**Note:** For very large crawls (50MB+ state files), the resume will automatically use streaming to load efficiently.
 
 ### Combining Options
 

@@ -203,7 +203,7 @@ Web Crawler CLI to **kompletne, bezpieczne i łatwe w użyciu** narzędzie do:
 
 ---
 
-**Wersja:** 2.2.0  
+**Wersja:** 2.3.1  
 **Ostatnia aktualizacja:** 2025-10-08  
 **Status:** Production Ready ✅
 

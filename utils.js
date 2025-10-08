@@ -1,4 +1,5 @@
-import { writeFile, readFile, access } from 'fs/promises';
+import { writeFile, readFile, access, stat } from 'fs/promises';
+import { createReadStream } from 'fs';
 import { constants } from 'fs';
 
 /**
@@ -122,17 +123,55 @@ export async function saveResultsLive(results, filename, metadata = {}, silent =
 }
 
 /**
- * Load previous crawl state from file
+ * Load previous crawl state from file using streaming for large files
  * @param {string} filename - State filename
  * @returns {Promise<Object|null>} - Previous state or null if not found
  */
 export async function loadCrawlState(filename) {
   try {
     await access(filename, constants.R_OK);
+    
+    // Check file size
+    const stats = await stat(filename);
+    const fileSizeMB = stats.size / (1024 * 1024);
+    
+    // For large files (>50MB), use streaming to avoid memory issues
+    if (fileSizeMB > 50) {
+      console.log(`⚠️  Large file detected (${fileSizeMB.toFixed(1)}MB), using streaming...`);
+      return await loadCrawlStateStream(filename);
+    }
+    
+    // For smaller files, use simple approach (faster)
     const content = await readFile(filename, 'utf-8');
     const data = JSON.parse(content);
     return data;
   } catch (error) {
+    return null;
+  }
+}
+
+/**
+ * Load crawl state using streaming (for large files)
+ * @param {string} filename - State filename
+ * @returns {Promise<Object|null>} - Previous state or null if not found
+ */
+async function loadCrawlStateStream(filename) {
+  try {
+    let data = '';
+    const stream = createReadStream(filename, { 
+      encoding: 'utf-8',
+      highWaterMark: 64 * 1024 // 64KB chunks
+    });
+    
+    // Read file in chunks
+    for await (const chunk of stream) {
+      data += chunk;
+    }
+    
+    // Parse complete JSON
+    return JSON.parse(data);
+  } catch (error) {
+    console.error(`⚠️  Error loading state with streaming: ${error.message}`);
     return null;
   }
 }
