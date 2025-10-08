@@ -1,16 +1,15 @@
 # Dependencies
 node_modules/
 
-# Output files - crawl results
-results.json
-crawl*.json
-*.crawl.json
+# All JSON files (crawler output, state, etc.)
+*.json
 
-# CSV exports
+# All CSV files (exports)
 *.csv
 
-# But keep package.json
+# EXCEPT package.json and package-lock.json
 !package.json
+!package-lock.json
 
 # Logs
 *.log
@@ -29,4 +28,6 @@ Thumbs.db
 # Temporary crawl state files
 *.tmp.json
 .crawl-state-*
+
+
 
